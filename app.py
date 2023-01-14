@@ -21,7 +21,7 @@ from PIL import Image
 import pandas as pd
 
 st.set_page_config(layout='wide',page_icon=':bar_chart:')
-img = Image.open("C:\\Users\\ddhanawa\\Downloads\\auto.jpeg")
+#img = Image.open("C:\\Users\\ddhanawa\\Downloads\\auto.jpeg")
 
 
 
@@ -123,7 +123,7 @@ sess = Session()
 
 
 
-st.sidebar.image(img,use_column_width=True)
+#st.sidebar.image(img,use_column_width=True)
 
 radio = st.sidebar.radio('Pages',options=['Dashboard','Purchase Entry','Daily Expenses','Sales Entry','Online Cars Details','Backup'])
 
