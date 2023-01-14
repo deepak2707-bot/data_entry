@@ -2,7 +2,6 @@
 """
 Created on Fri Nov 11 12:11:36 2022
 
-@author: ddhanawa
 """
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
@@ -22,7 +21,7 @@ from PIL import Image
 import pandas as pd
 
 st.set_page_config(layout='wide',page_icon=':bar_chart:')
-#img = Image.open("C:\\Users\\ddhanawa\\Downloads\\auto.jpeg")
+img = Image.open("C:\\Users\\ddhanawa\\Downloads\\auto.jpeg")
 
 
 
@@ -109,14 +108,14 @@ class UserInputRecAmount(Base):
 
 
 if __name__ == "__main__":
-    engine = create_engine('sqlite:///Jaydeep_Finacial_database.db')
+    engine = create_engine('sqlite:///Jaydeep_auto_world1.db')
     Base.metadata.create_all(engine)
 
 ##############################
 
 
 
-engine = create_engine('sqlite:///Jaydeep_Finacial_database.db')
+engine = create_engine('sqlite:///Jaydeep_auto_world1.db')
 
 Session = sessionmaker(bind=engine)
 
@@ -124,7 +123,7 @@ sess = Session()
 
 
 
-#st.sidebar.image(img,use_column_width=True)
+st.sidebar.image(img,use_column_width=True)
 
 radio = st.sidebar.radio('Pages',options=['Dashboard','Purchase Entry','Daily Expenses','Sales Entry','Online Cars Details','Backup'])
 
@@ -194,10 +193,23 @@ def entry():
 if radio == 'Purchase Entry':
     if __name__ == '__main__':
         entry()
-        
-  
-def entry1():
+
+
     
+def entry1():
+        last_record = sess.query(UserInput.vehicle_Number).all()
+
+        final_search = []
+
+
+        for row in last_record:
+         
+             final_search.append(row.vehicle_Number)
+                  
+        search_vehicle =st.selectbox('Choose Vehicle Number',options=final_search)
+        
+    
+        
         def balance_amt(num1,num2,num3,num4,num5):
             sum = (num1+num2+num3+num4+num5)
             
@@ -206,22 +218,15 @@ def entry1():
        
      
         with st.form(key='new1',clear_on_submit=True):
-            last_record = sess.query(UserInput.vehicle_Number).all()
-
-            final_search = []
-            
-            for row in last_record:
-           
-               final_search.append(row.vehicle_Number)
-            
+          
           
            
             
-            search_vehicle =st.selectbox('Choose Vehicle Number',options=final_search)
+            
             results = sess.query(UserInput).filter(UserInput.vehicle_Number == search_vehicle)
     
            # search_vehicle =st.text_input('Search Vehicle Number')
-            submit1 = st.form_submit_button('Search')
+            #submit1 = st.form_submit_button('Search')
             
             #if submit1:
             
@@ -286,7 +291,7 @@ def entry1():
             with c1:
                 
                 sales_date = st.date_input('Sell Date',sales_date)
-                seller_name = st.text_input('Seller Name',seller_name).upper()
+                seller_name = st.text_input('Seller Name',value=seller_name).upper()
                 seller_contact = st.text_input('Seller Contact',seller_contact)            
                 sell_amount = st.number_input('Sell Amount',sell_amount,step=1000)
                 commission1 = st.number_input('Commision',commission1,step=1000)
@@ -339,18 +344,10 @@ def entry1():
                 Diseal= st.number_input('Diseal',key='Diseal',min_value=0,step=1000,value=Diseal,disabled=True)
                 Driver= st.number_input('Driver',key='Driver',min_value=0,step=1000,value=Driver,disabled=True)
                 others = st.number_input('Others',key='Others',min_value=0,step=1000,value=others,disabled=True)
-               
-                 
-            
-                
-                
         
-                
-            
         if submit:
             try:
-               sess.query(UserInput).filter(UserInput.vehicle_Number == search_vehicle).update({'sales_date': sales_date,'seller_name': seller_name,'seller_contact': seller_contact,'commission1': commission1,'sell_amount': sell_amount,'first_part_payment': first_part_payment,'first_part_payment_date': first_part_payment_date,'first_part_payment_comment': first_part_payment_comment,'second_part_payment_date': second_part_payment_date,'third_part_payment': third_part_payment,'third_part_payment_date': third_part_payment_date,'third_part_payment_comment': third_part_payment_comment,'final_payment_date': final_payment_date,'final_payment_comment': final_payment_comment,'final_part_payment': final_payment,'token_amount':token_amount,'tokan_date':tokan_date,'second_part_payment':second_part_payment,'balance':balance,'second_part_payment_comment':second_part_payment_comment,'profitloss':profitloss})
-                                                                                               
+               sess.query(UserInput).filter(UserInput.vehicle_Number == search_vehicle).update({'sales_date': sales_date,'seller_name': seller_name,'seller_contact': seller_contact,'commission1': commission1,'sell_amount': sell_amount,'first_part_payment': first_part_payment,'first_part_payment_date': first_part_payment_date,'first_part_payment_comment': first_part_payment_comment,'second_part_payment_date': second_part_payment_date,'third_part_payment': third_part_payment,'third_part_payment_date': third_part_payment_date,'third_part_payment_comment': third_part_payment_comment,'final_payment_date': final_payment_date,'final_payment_comment': final_payment_comment,'final_part_payment': final_payment,'token_amount':token_amount,'tokan_date':tokan_date,'second_part_payment':second_part_payment,'balance':balance,'second_part_payment_comment':second_part_payment_comment,'profitloss':profitloss})                                                                                    
                sess.commit()
                st.success('Details Submitted successfully') 
             except Exception as e:
@@ -414,7 +411,7 @@ def detail_analysis():
         st.markdown('****************')
     st.subheader(':bar_chart: Top 5 Profitable Trades')
     profitloss = df.sort_values('profitloss',ascending=False).head(5)
-    
+    st.write(profitloss.to_html(), unsafe_allow_html=True)
     st.markdown('****************')
     st.subheader(':bar_chart: Purchase / Sales History')
     st.write(df.to_html(), unsafe_allow_html=True)
